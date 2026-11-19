@@ -3,13 +3,28 @@ import React, { useState } from "react";
 function Login({ onLogin }) {
   const [usuario, setUsuario] = useState("");
   const [contraseña, setContraseña] = useState("");
+  const [errores, setErrores] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (usuario === "admin" && contraseña === "1234") {
+    const nuevos = [];
+
+    if (usuario.trim() === "") {
+      nuevos.push("El usuario es obligatorio.");
+    }
+    if (contraseña === "") {
+      nuevos.push("La contraseña es obligatoria.");
+    }
+    if (
+      nuevos.length === 0 &&
+      !(usuario === "admin" && contraseña === "1234")
+    ) {
+      nuevos.push("Usuario o contraseña incorrectos.");
+    }
+
+    setErrores(nuevos);
+    if (nuevos.length === 0) {
       onLogin(usuario);
-    } else {
-      alert("Usuario o contraseña incorrectos");
     }
   };
 
@@ -35,6 +50,11 @@ function Login({ onLogin }) {
         </div>
         <button type="submit">Iniciar sesión</button>
       </form>
+      {errores.map((mensaje) => (
+        <p key={mensaje} role="alert" style={{ color: "crimson" }}>
+          {mensaje}
+        </p>
+      ))}
     </div>
   );
 }
